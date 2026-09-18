@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dusty Gannon">
+<meta name="dcterms.date" content="2026-09-18">
 
 <title>Sensor placement plan – ESRF Triad Design</title>
 <style>
@@ -217,6 +218,12 @@ window.Quarto = {
           </div>
   </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 18, 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -239,7 +246,7 @@ O(\mathbf{X}, \mathbf{Z}_1, \mathbf{Z}_2,...) = \lambda_{\text{min}}(\mathbf{M}^
 </section>
 <section id="data-wrangling" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="data-wrangling"><span class="header-section-number">2</span> Data wrangling</h2>
-<p>Several data wrangling steps were necessary to build a set of candidate sensor locations with the environmental covariates needed for the objective function above. For this analysis, I started with the <code>ESRF_Allocations_20260825.shp</code> layer provided by Kaitlyn Athearn on 25 August 2026, the 2023 biodiversity survey site centers (from Maggie Hallerud), and the ODF roads layer (from T-drive). This section summarizes those steps and their results, while the full process can be found on the <a href="Reports/data_wrangling_dsl_alloc.qmd">data wrangling page</a>.</p>
+<p>Several data wrangling steps were necessary to build a set of candidate sensor locations with the environmental covariates needed for the objective function above. For this analysis, I started with the <code>ESRF_Allocations_20260825.shp</code> layer provided by Kaitlyn Athearn on 25 August 2026, the 2023 biodiversity survey site centers (from Maggie Hallerud), and the ODF roads layer (from T-drive). This section summarizes those steps and their results, while the full process can be found on the <a href="../Reports/data_wrangling_dsl_alloc.html">data wrangling page</a>.</p>
 <div id="fig-trt-sp" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-trt-sp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -382,12 +389,16 @@ pixi run python python/sensor_site_optim.py</code></pre>
 </section>
 <section id="results" class="level4" data-number="3.1.2">
 <h4 data-number="3.1.2" class="anchored" data-anchor-id="results"><span class="header-section-number">3.1.2</span> Results</h4>
-<div id="cell-pairs-plot-alg1" class="cell" data-execution_count="3">
+<div id="cell-fig-pairs-alg1" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display">
-<div id="pairs-plot-alg1" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="sensor_placement_files/figure-html/pairs-plot-alg1-output-1.png" class="img-fluid figure-img"></p>
-<figcaption>Pairs plot showing scatters between each pair of environmental variables and the porportion of extensive stand treatments in the watershed. Colors of the points follow the color scheme in <a href="#fig-trt-sp" class="quarto-xref">Figure&nbsp;1</a>. The density plots along the diagonal show the distribution of each variable over the full set of candidate sensor locations with a rug plot at the bottom showing the values at the selected locations. The upper triangle gives Pearson’s correlation coefficient between each pair of variables.</figcaption>
+<div id="fig-pairs-alg1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pairs-alg1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="sensor_placement_files/figure-html/fig-pairs-alg1-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pairs-alg1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Pairs plot showing scatters between each pair of environmental variables and the porportion of extensive stand treatments in the watershed. Colors of the points follow the color scheme in <a href="#fig-trt-sp" class="quarto-xref">Figure&nbsp;1</a>. The density plots along the diagonal show the distribution of each variable over the full set of candidate sensor locations with a rug plot at the bottom showing the values at the selected locations. The upper triangle gives Pearson’s correlation coefficient between each pair of variables.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -464,10 +475,99 @@ pixi run python python/sensor_site_optim.py</code></pre>
 <img src="sensor_placement_files/figure-html/fig-sp-plot-res-output-1.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sp-plot-res-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Triad management units with biodiversity monitoring sites (blue), optimized sensor locations (black), and elevation contours.
+Figure&nbsp;3: Triad management units with biodiversity monitoring sites (blue), optimized sensor locations (black), and elevation contours.
 </figcaption>
 </figure>
 </div>
+</div>
+</div>
+<div class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Markdown, display</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>selection_summary1 <span class="op">=</span> pd.crosstab(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    best[<span class="st">'data'</span>][<span class="st">'triad_trt2'</span>],</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    best[<span class="st">'data'</span>][<span class="st">'alloc_simple'</span>],</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    margins<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    margins_name<span class="op">=</span><span class="st">'Total'</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>display(Markdown(selection_summary1.to_markdown()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div id="tbl-selection-summary-all" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="5">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-selection-summary-all-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Summary of selected sites by triad treatment and stand allocation category.
+</figcaption>
+<div aria-describedby="tbl-selection-summary-all-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">triad_trt2</th>
+<th style="text-align: right;">extensive</th>
+<th style="text-align: right;">intensive</th>
+<th style="text-align: right;">reserve</th>
+<th style="text-align: right;">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">crw_full</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">extensive</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">intensive</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">none</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">triad_e</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">triad_i</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Total</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">20</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
 </div>
 </div>
 </section>
@@ -532,85 +632,92 @@ Note
 </div>
 </div>
 <pre class="{bash}"><code>#| eval: false
+#| code-fold: false
+
 pixi run python python/biodiv_site_optim.py</code></pre>
 </section>
 </section>
 <section id="results-1" class="level3" data-number="3.3">
 <h3 data-number="3.3" class="anchored" data-anchor-id="results-1"><span class="header-section-number">3.3</span> Results</h3>
-<div id="cell-biodiv-init-v-final" class="cell" data-execution_count="5">
+<div id="cell-fig-pairs-biodiv" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dat_file_biodiv <span class="op">=</span> here(<span class="st">'Data/sensor_optim/results_biodiv_run01.pkl'</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(dat_file_biodiv, <span class="st">'rb'</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    res_biodiv <span class="op">=</span> pickle.load(<span class="bu">file</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>bio_candidate_locs <span class="op">=</span> gpd.read_file(</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    here(<span class="st">'Data/sensor_optim/data_for_optim.gpkg'</span>),</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    layer<span class="op">=</span><span class="st">'bio_candidate_locs'</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>final_objs_biodiv <span class="op">=</span> res_biodiv.<span class="bu">apply</span>(<span class="kw">lambda</span> r: r[<span class="st">'trace'</span>][<span class="op">-</span><span class="dv">1</span>])</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>best_biodiv <span class="op">=</span> res_biodiv.iloc[final_objs_biodiv.argmax()]</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># init_biodiv = pairs_plot(</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#     best_biodiv['init'],</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#     vars = vars_interest,</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#     candidate_locs = bio_candidate_locs</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>final_biodiv <span class="op">=</span> pairs_plot(</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    best_biodiv[<span class="st">'data'</span>],</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">vars</span> <span class="op">=</span> vars_interest,</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    candidate_locs <span class="op">=</span> candidates,</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    color_col <span class="op">=</span> <span class="st">'triad_trt2'</span>,</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    color_map <span class="op">=</span> color_map</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co"># init_biodiv.show()</span></span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="co"># final_biodiv.show()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dat_file_biodiv <span class="op">=</span> here(<span class="st">'Data/sensor_optim/results_biodiv_run01.pkl'</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(dat_file_biodiv, <span class="st">'rb'</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    res_biodiv <span class="op">=</span> pickle.load(<span class="bu">file</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>bio_candidate_locs <span class="op">=</span> gpd.read_file(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    here(<span class="st">'Data/sensor_optim/data_for_optim.gpkg'</span>),</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    layer<span class="op">=</span><span class="st">'bio_candidate_locs'</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>final_objs_biodiv <span class="op">=</span> res_biodiv.<span class="bu">apply</span>(<span class="kw">lambda</span> r: r[<span class="st">'trace'</span>][<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>best_biodiv <span class="op">=</span> res_biodiv.iloc[final_objs_biodiv.argmax()]</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># init_biodiv = pairs_plot(</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">#     best_biodiv['init'],</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#     vars = vars_interest,</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#     candidate_locs = bio_candidate_locs</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>final_biodiv <span class="op">=</span> pairs_plot(</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    best_biodiv[<span class="st">'data'</span>],</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">vars</span> <span class="op">=</span> vars_interest,</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    candidate_locs <span class="op">=</span> candidates,</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    color_col <span class="op">=</span> <span class="st">'triad_trt2'</span>,</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    color_map <span class="op">=</span> color_map</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co"># init_biodiv.show()</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co"># final_biodiv.show()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="sensor_placement_files/figure-html/biodiv-init-v-final-output-1.png" id="biodiv-init-v-final" class="img-fluid figure-img"></p>
+<div id="fig-pairs-biodiv" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pairs-biodiv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="sensor_placement_files/figure-html/fig-pairs-biodiv-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pairs-biodiv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Pairs plot showing scatters between each pair of environmental variables and the porportion of extensive stand treatments in the watershed for the selected sites out of the candidate biodiversity plot centers. Colors of the points follow the color scheme in <a href="#fig-trt-sp" class="quarto-xref">Figure&nbsp;1</a>. The density plots along the diagonal show the distribution of each variable over the full ESRF (minus the partial watersheds) with a rug plot at the bottom showing the values at the selected locations. The upper triangle gives Pearson’s correlation coefficient between each pair of variables.
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="cell-fig-sp-plot-res-biodiv" class="cell" data-execution_count="6">
+<div id="cell-fig-sp-plot-res-biodiv" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>))</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> dem_120_sm.x.values</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> dem_120_sm.y.values</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>elev <span class="op">=</span> dem_120_sm.values[<span class="dv">0</span>]</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>ax.contour(xs, ys, elev, levels<span class="op">=</span><span class="dv">20</span>, colors<span class="op">=</span><span class="st">'black'</span>, linewidths<span class="op">=</span><span class="fl">0.4</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># triad polygons colored by treatment (replicates fig-trt-sp)</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>eus_proj.plot(</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    ax<span class="op">=</span>ax,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>eus_proj[<span class="st">'triad_trt2'</span>].<span class="bu">map</span>(color_map).fillna(<span class="st">"grey"</span>),</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    edgecolor<span class="op">=</span><span class="st">'black'</span>,</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.5</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>bio_sites.to_crs(dem_crs).plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">'steelblue'</span>, markersize<span class="op">=</span><span class="dv">20</span>, zorder<span class="op">=</span><span class="dv">3</span>, label<span class="op">=</span><span class="st">'Bio sites'</span>)</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>best_biodiv[<span class="st">'data'</span>].to_crs(dem_crs).plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">'white'</span>, markersize<span class="op">=</span><span class="dv">100</span>, marker<span class="op">=</span><span class="st">'*'</span>, zorder<span class="op">=</span><span class="dv">4</span>, label<span class="op">=</span><span class="st">'Selected sites'</span>)</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>best_biodiv[<span class="st">'data'</span>].to_crs(dem_crs).plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">'black'</span>, markersize<span class="op">=</span><span class="dv">90</span>, marker<span class="op">=</span><span class="st">'*'</span>, zorder<span class="op">=</span><span class="dv">4</span>, label<span class="op">=</span><span class="st">'Selected sites'</span>)</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>ax.legend(handles<span class="op">=</span>trt_handles <span class="op">+</span> point_handles, loc<span class="op">=</span><span class="st">'lower right'</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>fig.savefig(here(<span class="st">'Figures/site_map_biodiv_01.png'</span>), dpi <span class="op">=</span> <span class="dv">300</span>, bbox_inches <span class="op">=</span> <span class="st">'tight'</span>)</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co"># also save selected bio sites as a layer</span></span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>best_biodiv[<span class="st">'data'</span>].to_file(</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    here(<span class="st">'Data/sensor_optim/results_biodiv_run01.gpkg'</span>),</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    driver<span class="op">=</span><span class="st">'GPKG'</span></span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> dem_120_sm.x.values</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> dem_120_sm.y.values</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>elev <span class="op">=</span> dem_120_sm.values[<span class="dv">0</span>]</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>ax.contour(xs, ys, elev, levels<span class="op">=</span><span class="dv">20</span>, colors<span class="op">=</span><span class="st">'black'</span>, linewidths<span class="op">=</span><span class="fl">0.4</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># triad polygons colored by treatment (replicates fig-trt-sp)</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>eus_proj.plot(</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    ax<span class="op">=</span>ax,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>eus_proj[<span class="st">'triad_trt2'</span>].<span class="bu">map</span>(color_map).fillna(<span class="st">"grey"</span>),</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    edgecolor<span class="op">=</span><span class="st">'black'</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.5</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>bio_sites.to_crs(dem_crs).plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">'steelblue'</span>, markersize<span class="op">=</span><span class="dv">20</span>, zorder<span class="op">=</span><span class="dv">3</span>, label<span class="op">=</span><span class="st">'Bio sites'</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>best_biodiv[<span class="st">'data'</span>].to_crs(dem_crs).plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">'white'</span>, markersize<span class="op">=</span><span class="dv">100</span>, marker<span class="op">=</span><span class="st">'*'</span>, zorder<span class="op">=</span><span class="dv">4</span>, label<span class="op">=</span><span class="st">'Selected sites'</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>best_biodiv[<span class="st">'data'</span>].to_crs(dem_crs).plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">'black'</span>, markersize<span class="op">=</span><span class="dv">90</span>, marker<span class="op">=</span><span class="st">'*'</span>, zorder<span class="op">=</span><span class="dv">4</span>, label<span class="op">=</span><span class="st">'Selected sites'</span>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>ax.legend(handles<span class="op">=</span>trt_handles <span class="op">+</span> point_handles, loc<span class="op">=</span><span class="st">'lower right'</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>fig.savefig(here(<span class="st">'Figures/site_map_biodiv_01.png'</span>), dpi <span class="op">=</span> <span class="dv">300</span>, bbox_inches <span class="op">=</span> <span class="st">'tight'</span>)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="co"># also save selected bio sites as a layer</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>best_biodiv[<span class="st">'data'</span>].to_file(</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    here(<span class="st">'Data/sensor_optim/results_biodiv_run01.gpkg'</span>),</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    driver<span class="op">=</span><span class="st">'GPKG'</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="fig-sp-plot-res-biodiv" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -619,31 +726,28 @@ pixi run python python/biodiv_site_optim.py</code></pre>
 <img src="sensor_placement_files/figure-html/fig-sp-plot-res-biodiv-output-1.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sp-plot-res-biodiv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: Triad management units with all existing biodiversity monitoring sites (grey), and the optimized subset of 20 selected via the exchange search (black).
+Figure&nbsp;5: Triad management units with all existing biodiversity monitoring sites (grey), and the optimized subset of 20 selected via the exchange search (black).
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Markdown, display</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>selection_summary <span class="op">=</span> pd.crosstab(</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    best_biodiv[<span class="st">'data'</span>][<span class="st">'triad_trt2'</span>],</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    best_biodiv[<span class="st">'data'</span>][<span class="st">'alloc_simple'</span>],</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    margins<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    margins_name<span class="op">=</span><span class="st">'Total'</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>display(Markdown(selection_summary.to_markdown()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>selection_summary <span class="op">=</span> pd.crosstab(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    best_biodiv[<span class="st">'data'</span>][<span class="st">'triad_trt2'</span>],</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    best_biodiv[<span class="st">'data'</span>][<span class="st">'alloc_simple'</span>],</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    margins<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    margins_name<span class="op">=</span><span class="st">'Total'</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>display(Markdown(selection_summary.to_markdown()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div id="tbl-biodiv-selection-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="7">
+<div id="tbl-biodiv-selection-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="8">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-biodiv-selection-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1: Number of selected biodiversity monitoring sites by triad treatment and (simplified) stand allocation category.
+Table&nbsp;2: Number of selected biodiversity monitoring sites by triad treatment and (simplified) stand allocation category.
 </figcaption>
 <div aria-describedby="tbl-biodiv-selection-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output cell-output-display cell-output-markdown">
